@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->enum('type', ['expense', 'income']);
+            $table->decimal('amount', 10, 2);
+            $table->text('description');
+            $table->text('transcript')->nullable(); // Original voice transcript
+            $table->foreignId('workspace_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
