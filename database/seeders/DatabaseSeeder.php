@@ -13,11 +13,32 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
+        // Create a test user
+        $user = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Create a default workspace for the user
+        $workspace = \App\Models\Workspace::create([
+            'name' => 'My Personal Finance',
+            'description' => 'Personal finance tracker',
+            'owner_id' => $user->id,
+        ]);
+
+        // Attach user to workspace
+        $workspace->members()->attach($user->id, ['role' => 'admin']);
+
+        $this->command->info('Created test user and workspace.');
+
+        // Run seeders in order
+        $this->call([
+            CategorySeeder::class,
+            TransactionSeeder::class,
+            BudgetSeeder::class,
+            SavingsGoalSeeder::class,
+        ]);
+
+        $this->command->info('Database seeding completed successfully!');
     }
 }
