@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Application\Services\VoiceTransactionService;
 use App\Domain\Services\TransactionService;
+use App\Domain\Services\VoiceProcessingService;
 use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\Workspace;
@@ -13,7 +14,8 @@ class TransactionController extends Controller
 {
     public function __construct(
         private VoiceTransactionService $voiceTransactionService,
-        private TransactionService $transactionService
+        private TransactionService $transactionService,
+        private VoiceProcessingService $voiceProcessingService
     ) {
     }
 
@@ -139,16 +141,75 @@ class TransactionController extends Controller
 
     public function processVoice(Request $request)
     {
-        $data = $request->validate([
-            "audio" => 'required|file',
-        ]);
+        try {
+            $data = $request->validate([
+                "audio" => 'required|file|mimes:webm,wav,mp3,ogg,mpeg|max:10240', // Max 10MB
+            ]);
 
-        $audioFile = $data['audio'];
+            $audioFile = $data['audio'];
 
-        $result = $this->voiceTransactionService->processVoiceTransaction(
-            $audioFile,
-        );
+            // Process voice input to get extracted data (don't create transaction yet)
+            $extractedData = $this->voiceProcessingService->processVoiceInput($audioFile);
 
-        return response()->json($result);
+            // Check if processing failed
+            if (isset($extractedData['error'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $extractedData['message'] ?? 'Failed to process voice recording',
+                    'details' => $extractedData['details'] ?? null,
+                ], 422);
+            }
+
+            // Get categories for frontend mapping
+            $user = auth()->user();
+            $workspace = $user ? Workspace::where('user_id', $user->id)->first() : null;
+            $categories = $workspace ? Category::where('workspace_id', $workspace->id)->get() : collect();
+
+            // Find matching category ID
+            $categoryId = null;
+            $categoryName = $extractedData['category_name'] ?? null;
+
+            if ($categoryName) {
+                $matchedCategory = $categories->first(function ($cat) use ($categoryName) {
+                    return strcasecmp($cat->name, $categoryName) === 0;
+                });
+
+                if ($matchedCategory) {
+                    $categoryId = $matchedCategory->id;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'type' => $extractedData['type'] ?? 'expense',
+                    'amount' => $extractedData['amount'] ?? 0,
+                    'description' => $extractedData['description'] ?? '',
+                    'category_id' => $categoryId,
+                    'category_name' => $categoryName,
+                    'transaction_date' => $extractedData['transaction_date'] ?? now()->format('Y-m-d'),
+                    'ai_confidence_score' => $extractedData['ai_confidence_score'] ?? 70,
+                    'transcript' => $extractedData['transcript'] ?? '',
+                ],
+                'categories' => $categories->map(fn($cat) => [
+                    'id' => $cat->id,
+                    'name' => $cat->name,
+                ]),
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid audio file',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Voice processing controller error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while processing your voice recording',
+                'details' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
     }
 }

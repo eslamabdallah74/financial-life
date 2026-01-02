@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::post('/transactions/process-voice', [TransactionController::class, 'processVoice'])->name('transactions.process-voice');
     Route::resource('transactions', TransactionController::class);
     Route::resource('categories', \App\Http\Controllers\CategoryController::class);
 });
