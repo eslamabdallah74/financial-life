@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Workspace;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -12,7 +13,21 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $user = auth()->user();
+
+        // Get user's workspace
+        $workspace = Workspace::where('user_id', $user->id)->first();
+
+        if (!$workspace) {
+            $workspace = Workspace::create([
+                'name' => 'Personal Workspace',
+                'owner_id' => $user->id,
+            ]);
+        }
+
+        // Get only categories from user's workspace
+        $categories = Category::where('workspace_id', $workspace->id)->get();
+
         return view('categories.index', compact('categories'));
     }
 
@@ -35,6 +50,21 @@ class CategoryController extends Controller
             'icon' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:7',
         ]);
+
+        $user = auth()->user();
+
+        // Get or create user's workspace
+        $workspace = Workspace::where('user_id', $user->id)->first();
+
+        if (!$workspace) {
+            $workspace = Workspace::create([
+                'name' => 'Personal Workspace',
+                'owner_id' => $user->id,
+            ]);
+        }
+
+        // Add workspace_id to validated data
+        $validated['workspace_id'] = $workspace->id;
 
         Category::create($validated);
 

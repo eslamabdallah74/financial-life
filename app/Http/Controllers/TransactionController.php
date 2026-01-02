@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Application\Services\VoiceTransactionService;
 use App\Domain\Services\TransactionService;
+use App\Models\Category;
+use App\Models\Transaction;
 use App\Models\Workspace;
 use Illuminate\Http\Request;
 
@@ -33,7 +35,17 @@ class TransactionController extends Controller
      */
     public function create()
     {
-        $categories = \App\Models\Category::all();
+        $user = auth()->user();
+        $workspace = Workspace::where('user_id', $user->id)->first();
+
+        if (!$workspace) {
+            $workspace = Workspace::create([
+                'name' => 'Personal Workspace',
+                'owner_id' => $user->id,
+            ]);
+        }
+
+        $categories = Category::where('workspace_id', $workspace->id)->get();
         return view('transactions.create', compact('categories'));
     }
 
@@ -65,7 +77,7 @@ class TransactionController extends Controller
 
         $validated['workspace_id'] = $workspace->id;
 
-        \App\Models\Transaction::create($validated);
+        Transaction::create($validated);
 
         return redirect()->route('transactions.index')->with('success', 'Transaction created successfully.');
     }
@@ -73,7 +85,7 @@ class TransactionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(\App\Models\Transaction $transaction)
+    public function show(Transaction $transaction)
     {
         return view('transactions.show', compact('transaction'));
     }
@@ -81,16 +93,26 @@ class TransactionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(\App\Models\Transaction $transaction)
+    public function edit(Transaction $transaction)
     {
-        $categories = \App\Models\Category::all();
+        $user = auth()->user();
+        $workspace = Workspace::where('user_id', $user->id)->first();
+
+        if (!$workspace) {
+            $workspace = Workspace::create([
+                'name' => 'Personal Workspace',
+                'owner_id' => $user->id,
+            ]);
+        }
+
+        $categories = Category::where('workspace_id', $workspace->id)->get();
         return view('transactions.edit', compact('transaction', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, \App\Models\Transaction $transaction)
+    public function update(Request $request, Transaction $transaction)
     {
         $validated = $request->validate([
             'type' => 'required|in:income,expense',
@@ -108,7 +130,7 @@ class TransactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(\App\Models\Transaction $transaction)
+    public function destroy(Transaction $transaction)
     {
         $transaction->delete();
 

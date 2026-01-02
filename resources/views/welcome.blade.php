@@ -94,10 +94,10 @@
         }
 
         .glass-effect {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .animate-slide-up {
@@ -187,7 +187,7 @@
         }
 
         .stats-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.5) 0%, rgba(30, 41, 59, 0.4) 100%);
             backdrop-filter: blur(10px);
         }
 
@@ -262,15 +262,25 @@
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <button
-                            class="hidden sm:block px-6 py-2.5 text-sm font-semibold text-gray-300 hover:text-white transition-all hover:scale-105">Login</button>
-                        <button
-                            class="relative px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-bold rounded-xl overflow-hidden group shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all duration-300">
-                            <span class="relative z-10">Get Started</span>
-                            <div
-                                class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300">
-                            </div>
-                        </button>
+                        @auth
+                            <a href="{{ route('dashboard') }}"
+                                class="relative px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-bold rounded-xl overflow-hidden group shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all duration-300">
+                                <span class="relative z-10">Dashboard</span>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300">
+                                </div>
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="hidden sm:block px-6 py-2.5 text-sm font-semibold text-gray-300 hover:text-white transition-all hover:scale-105">Login</a>
+                            <a href="{{ route('register') }}"
+                                class="relative px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-sm font-bold rounded-xl overflow-hidden group shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all duration-300">
+                                <span class="relative z-10">Get Started</span>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300">
+                                </div>
+                            </a>
+                        @endauth
 
                         <!-- Mobile Menu Button -->
                         <button class="md:hidden hamburger w-10 h-10 flex flex-col justify-center items-center gap-1.5"
@@ -292,11 +302,15 @@
                         <a href="#pricing"
                             class="block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all">Pricing</a>
                         <div class="pt-3 border-t border-white/10">
-                            <button
-                                class="w-full px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all text-left">Login</button>
-                            <button
-                                class="w-full mt-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-lg">Get
-                                Started</button>
+                            @auth
+                                <a href="{{ route('dashboard') }}"
+                                    class="w-full block px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-lg text-center">Dashboard</a>
+                            @else
+                                <a href="{{ route('login') }}"
+                                    class="w-full block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all text-left">Login</a>
+                                <a href="{{ route('register') }}"
+                                    class="w-full block mt-2 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-lg text-center">Get Started</a>
+                            @endauth
                         </div>
                     </div>
                 </div>
@@ -338,8 +352,8 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button
-                            class="group relative px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-2xl overflow-hidden transform hover:scale-105 transition-all">
+                        <a href="{{ route('register') }}"
+                            class="group relative px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-2xl overflow-hidden transform hover:scale-105 transition-all inline-block">
                             <span class="relative z-10 flex items-center justify-center gap-2">
                                 Start Free Trial
                                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
@@ -351,7 +365,7 @@
                             <div
                                 class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left">
                             </div>
-                        </button>
+                        </a>
                         <button
                             class="px-8 py-4 bg-white/5 backdrop-blur-sm border border-white/10 text-white font-bold rounded-2xl hover:bg-white/10 transition-all">
                             Watch Demo
@@ -617,8 +631,8 @@
                     today—<span class="text-green-300 font-semibold">no credit card required</span>.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button
-                        class="group relative px-10 py-5 bg-white text-gray-900 font-bold rounded-2xl overflow-hidden transform hover:scale-105 transition-all shadow-2xl">
+                    <a href="{{ route('register') }}"
+                        class="group relative px-10 py-5 bg-white text-gray-900 font-bold rounded-2xl overflow-hidden transform hover:scale-105 transition-all shadow-2xl inline-block">
                         <span class="relative z-10 flex items-center justify-center gap-2">
                             Start Free Trial
                             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
@@ -627,11 +641,11 @@
                                     d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
                         </span>
-                    </button>
-                    <button
-                        class="px-10 py-5 bg-white/5 backdrop-blur-sm border border-white/20 text-white font-bold rounded-2xl hover:bg-white/10 transition-all">
-                        Schedule Demo
-                    </button>
+                    </a>
+                    <a href="{{ route('login') }}"
+                        class="px-10 py-5 bg-white/5 backdrop-blur-sm border border-white/20 text-white font-bold rounded-2xl hover:bg-white/10 transition-all inline-block">
+                        Sign In
+                    </a>
                 </div>
                 <p class="mt-8 text-sm text-gray-400">✨ Free forever plan • No credit card required • Cancel anytime</p>
             </div>
