@@ -337,29 +337,42 @@
 
                                         <!-- Processing State -->
                                         <div id="btn-content-processing"
-                                            class="hidden absolute inset-0 flex items-center justify-center gap-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 aurora-animate shimmer">
-                                            <div class="voice-wave">
-                                                <div class="wave-bar"></div>
-                                                <div class="wave-bar"></div>
-                                                <div class="wave-bar"></div>
-                                                <div class="wave-bar"></div>
-                                                <div class="wave-bar"></div>
-                                            </div>
-                                            <div class="text-left text-white">
-                                                <div
-                                                    class="text-xl font-black tracking-tight uppercase italic drop-shadow-md">
-                                                    Analyzing Detail</div>
-                                                <div class="flex items-center gap-2">
-                                                    <div
-                                                        class="w-1.5 h-1.5 bg-white rounded-full animate-ping shadow-[0_0_8px_rgba(255,255,255,0.8)]">
+                                            class="hidden absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600">
+
+                                            <div
+                                                class="flex items-center gap-6 px-8 py-6 rounded-2xl bg-white/10 backdrop-blur-md shadow-2xl">
+
+                                                <div class="flex items-end gap-1 h-10">
+                                                    <span class="w-1.5 rounded-full bg-white/90 animate-pulse"
+                                                        style="height: 12px"></span>
+                                                    <span class="w-1.5 rounded-full bg-white/90 animate-pulse"
+                                                        style="height: 20px; animation-delay:.1s"></span>
+                                                    <span class="w-1.5 rounded-full bg-white/90 animate-pulse"
+                                                        style="height: 28px; animation-delay:.2s"></span>
+                                                    <span class="w-1.5 rounded-full bg-white/90 animate-pulse"
+                                                        style="height: 20px; animation-delay:.3s"></span>
+                                                    <span class="w-1.5 rounded-full bg-white/90 animate-pulse"
+                                                        style="height: 12px; animation-delay:.4s"></span>
+                                                </div>
+
+                                                <div class="text-left">
+                                                    <div class="text-lg font-semibold text-white tracking-tight">
+                                                        Analyzing details
                                                     </div>
-                                                    <div
-                                                        class="text-[10px] font-black uppercase tracking-[0.2em] text-white/90 drop-shadow-sm">
-                                                        Gemini Ultra Engine
+                                                    <div class="flex items-center gap-2 mt-1">
+                                                        <span
+                                                            class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-ping"></span>
+                                                        <span
+                                                            class="text-[11px] uppercase tracking-widest text-white/80">
+                                                            Gemini Engine
+                                                        </span>
                                                     </div>
                                                 </div>
+
                                             </div>
+
                                         </div>
+
                                     </button>
                                 </div>
 
