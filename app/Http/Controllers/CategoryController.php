@@ -16,7 +16,7 @@ class CategoryController extends Controller
         $user = auth()->user();
 
         // Get user's workspace
-        $workspace = Workspace::where('user_id', $user->id)->first();
+        $workspace = Workspace::where('owner_id', $user->id)->first();
 
         if (!$workspace) {
             $workspace = Workspace::create([
@@ -54,7 +54,7 @@ class CategoryController extends Controller
         $user = auth()->user();
 
         // Get or create user's workspace
-        $workspace = Workspace::where('user_id', $user->id)->first();
+        $workspace = Workspace::where('owner_id', $user->id)->first();
 
         if (!$workspace) {
             $workspace = Workspace::create([

@@ -38,7 +38,7 @@ class TransactionController extends Controller
     public function create()
     {
         $user = auth()->user();
-        $workspace = Workspace::where('user_id', $user->id)->first();
+        $workspace = Workspace::where('owner_id', $user->id)->first();
 
         if (!$workspace) {
             $workspace = Workspace::create([
@@ -98,7 +98,7 @@ class TransactionController extends Controller
     public function edit(Transaction $transaction)
     {
         $user = auth()->user();
-        $workspace = Workspace::where('user_id', $user->id)->first();
+        $workspace = Workspace::where('owner_id', $user->id)->first();
 
         if (!$workspace) {
             $workspace = Workspace::create([
@@ -148,8 +148,14 @@ class TransactionController extends Controller
 
             $audioFile = $data['audio'];
 
-            // Process voice input to get extracted data (don't create transaction yet)
-            $extractedData = $this->voiceProcessingService->processVoiceInput($audioFile);
+            // Get categories for context
+            $user = auth()->user();
+            $workspace = $user ? Workspace::where('owner_id', $user->id)->first() : null;
+            $categories = $workspace ? Category::where('workspace_id', $workspace->id)->get() : collect();
+            $categoryNames = $categories->pluck('name')->toArray();
+
+            // Process voice input to get extracted data (passing category context)
+            $extractedData = $this->voiceProcessingService->processVoiceInput($audioFile, $categoryNames);
 
             // Check if processing failed
             if (isset($extractedData['error'])) {
@@ -160,12 +166,7 @@ class TransactionController extends Controller
                 ], 422);
             }
 
-            // Get categories for frontend mapping
-            $user = auth()->user();
-            $workspace = $user ? Workspace::where('user_id', $user->id)->first() : null;
-            $categories = $workspace ? Category::where('workspace_id', $workspace->id)->get() : collect();
-
-            // Find matching category ID
+            // Find matching category ID from AI response
             $categoryId = null;
             $categoryName = $extractedData['category_name'] ?? null;
 

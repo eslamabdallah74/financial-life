@@ -8,8 +8,18 @@ use App\Models\Workspace;
 
 class TransactionService
 {
-    public function createFromVoiceData(array $data,?Category $category = null): Transaction
+    public function createFromVoiceData(array $data, ?Category $category = null): Transaction
     {
+        $user = auth()->user();
+        $workspace = Workspace::where('owner_id', $user->id)->first();
+
+        if (!$workspace) {
+            $workspace = Workspace::create([
+                'name' => 'Personal Workspace',
+                'owner_id' => $user->id,
+            ]);
+        }
+
         // If no category is provided but we have a category name, try to find or create it
         if (!$category && isset($data['category'])) {
             $category = $workspace->categories()
@@ -20,13 +30,13 @@ class TransactionService
         }
 
         return Transaction::create([
-            'type' => $data['type'],
-            'amount' => $data['amount'],
-            'description' => $data['description'],
-            'transcript' => $data['transcript'],
+            'type' => $data['type'] ?? 'expense',
+            'amount' => $data['amount'] ?? 0,
+            'description' => $data['description'] ?? '',
+            'transcript' => $data['transcript'] ?? null,
             'workspace_id' => $workspace->id,
             'category_id' => $category?->id,
-            'user_id' => auth()->id(),
+            'user_id' => $user->id,
         ]);
     }
 

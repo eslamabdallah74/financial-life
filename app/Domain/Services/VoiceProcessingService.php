@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class VoiceProcessingService implements VoiceProcessorInterface
 {
-    public function processVoiceInput(UploadedFile $audioFile): array
+    public function processVoiceInput(UploadedFile $audioFile, array $categories = []): array
     {
         try {
             // 1. Save locally first (Permanent backup)
@@ -20,7 +20,6 @@ class VoiceProcessingService implements VoiceProcessorInterface
             $localAudioPath = $directory . '/' . $filename;
 
             // 2. Prepare for Gemini (Copy to temp)
-            // Gemini needs local file path for upload
             $tempPath = storage_path('app/tmp');
             if (!file_exists($tempPath)) {
                 mkdir($tempPath, 0755, true);
@@ -28,11 +27,17 @@ class VoiceProcessingService implements VoiceProcessorInterface
             $tempFilePath = $tempPath . '/' . uniqid() . '.mp3';
             copy($audioFile->getRealPath(), $tempFilePath);
 
-            // 3. Process with Gemini AI using the builder pattern
-            // We use 'gemini-flash-latest' as verified in available models
+            // 3. Prepare Prompt with Categories
+            $categoriesList = empty($categories) ? "None provided" : implode(', ', $categories);
+            $prompt = "Extract transaction details: amount, type (income/expense), description (summary), and date (YYYY-MM-DD). 
+                      Also, pick the most relevant category from this list: [{$categoriesList}]. 
+                      If no category fits perfectly, return null for category.
+                      Return as JSON.";
+
+            // 4. Process with Gemini AI
             $result = Gemini::text()
                 ->model('gemini-flash-latest')
-                ->prompt('Extract transaction details: amount, type (income/expense), description (summary), and date (YYYY-MM-DD). Return as JSON.')
+                ->prompt($prompt)
                 ->upload('audio', $tempFilePath)
                 ->generate();
 
@@ -67,8 +72,8 @@ class VoiceProcessingService implements VoiceProcessorInterface
                     'amount' => $json['amount'] ?? 0,
                     'description' => $json['description'] ?? '',
                     'transaction_date' => $json['date'] ?? $json['transaction_date'] ?? date('Y-m-d'),
-                    'category_name' => null, // User said ignore category
-                    'ai_confidence_score' => 80,
+                    'category_name' => $json['category'] ?? null,
+                    'ai_confidence_score' => 85,
                     'transcript' => $response,
                     'audio_file_path' => $audioPath
                 ];

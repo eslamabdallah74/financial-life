@@ -183,9 +183,31 @@
                             }
 
                             .shimmer {
-                                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+                                background-image: linear-gradient(90deg,
+                                        rgba(255, 255, 255, 0) 0%,
+                                        rgba(255, 255, 255, 0.1) 50%,
+                                        rgba(255, 255, 255, 0) 100%);
                                 background-size: 200% 100%;
-                                animation: shimmer 1.5s infinite;
+                                animation: shimmer 2s infinite linear;
+                            }
+
+                            .aurora-animate {
+                                background-size: 400% 400%;
+                                animation: aurora 15s ease infinite;
+                            }
+
+                            @keyframes aurora {
+                                0% {
+                                    background-position: 0% 50%;
+                                }
+
+                                50% {
+                                    background-position: 100% 50%;
+                                }
+
+                                100% {
+                                    background-position: 0% 50%;
+                                }
                             }
 
                             @keyframes shimmer {
@@ -195,6 +217,49 @@
 
                                 100% {
                                     background-position: 200% 0;
+                                }
+                            }
+
+                            .voice-wave {
+                                display: flex;
+                                align-items: center;
+                                gap: 3px;
+                                height: 24px;
+                            }
+
+                            .wave-bar {
+                                width: 3px;
+                                height: 100%;
+                                background-color: white;
+                                border-radius: 10px;
+                                animation: wave 1.2s infinite ease-in-out;
+                            }
+
+                            .wave-bar:nth-child(2) {
+                                animation-delay: 0.1s;
+                            }
+
+                            .wave-bar:nth-child(3) {
+                                animation-delay: 0.2s;
+                            }
+
+                            .wave-bar:nth-child(4) {
+                                animation-delay: 0.3s;
+                            }
+
+                            .wave-bar:nth-child(5) {
+                                animation-delay: 0.4s;
+                            }
+
+                            @keyframes wave {
+
+                                0%,
+                                100% {
+                                    transform: scaleY(0.3);
+                                }
+
+                                50% {
+                                    transform: scaleY(1);
                                 }
                             }
                         </style>
@@ -272,21 +337,27 @@
 
                                         <!-- Processing State -->
                                         <div id="btn-content-processing"
-                                            class="hidden absolute inset-0 flex items-center justify-center gap-4 bg-indigo-600 processing-pulse shimmer">
-                                            <div
-                                                class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                                                <svg class="w-6 h-6 text-white animate-spin" fill="none"
-                                                    stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" />
-                                                </svg>
+                                            class="hidden absolute inset-0 flex items-center justify-center gap-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 aurora-animate shimmer">
+                                            <div class="voice-wave">
+                                                <div class="wave-bar"></div>
+                                                <div class="wave-bar"></div>
+                                                <div class="wave-bar"></div>
+                                                <div class="wave-bar"></div>
+                                                <div class="wave-bar"></div>
                                             </div>
                                             <div class="text-left text-white">
-                                                <div class="text-xl font-black tracking-tight tracking-wider">Analyzing
-                                                    Audio</div>
-                                                <div class="text-xs font-bold uppercase tracking-widest opacity-80">
-                                                    Gemini AI Engine</div>
+                                                <div
+                                                    class="text-xl font-black tracking-tight uppercase italic drop-shadow-md">
+                                                    Analyzing Detail</div>
+                                                <div class="flex items-center gap-2">
+                                                    <div
+                                                        class="w-1.5 h-1.5 bg-white rounded-full animate-ping shadow-[0_0_8px_rgba(255,255,255,0.8)]">
+                                                    </div>
+                                                    <div
+                                                        class="text-[10px] font-black uppercase tracking-[0.2em] text-white/90 drop-shadow-sm">
+                                                        Gemini Ultra Engine
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </button>
@@ -627,7 +698,7 @@
                         setFormLock(true);
                     } else if (state === 'processing') {
                         btnProcessing.classList.remove('hidden');
-                        recordBtn.disabled = true;
+                        recordBtn.style.pointerEvents = 'none';
                         setFormLock(true);
                     }
                 }
