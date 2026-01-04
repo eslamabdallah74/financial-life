@@ -261,10 +261,17 @@
                                 50% {
                                     transform: scaleY(1);
                                 }
-                            }
-                        </style>
 
-                        <div class="relative">
+                            /* Remove number input arrows/scroll */
+                            input::-webkit-outer-spin-button,
+                            input::-webkit-inner-spin-button {
+                                -webkit-appearance: none;
+                                margin: 0;
+                            }
+                            input[type=number] {
+                                -moz-appearance: textfield;
+                            }
+                        </style>                        <div class="relative">
                             <div class="flex items-center justify-between mb-8">
                                 <div class="flex items-center gap-4">
                                     <div
@@ -445,16 +452,13 @@
                             </div>
 
                             <div class="relative group">
-                                <div
-                                    class="absolute left-6 top-1/2 -translate-y-1/2 text-5xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent pointer-events-none">
-                                    $</div>
                                 <input type="number" id="amount" name="amount" step="0.01" min="0" placeholder="0.00"
                                     value="{{ old('amount') }}"
                                     class="w-full pl-24 pr-20 py-8 text-6xl font-black border-0 bg-gradient-to-r from-gray-50 to-indigo-50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all placeholder:text-gray-300"
-                                    required autofocus>
+                                    required>
                                 <div class="absolute right-6 top-1/2 -translate-y-1/2">
                                     <span
-                                        class="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-sm font-bold rounded-full shadow-lg">USD</span>
+                                        class="inline-flex items-center px-4 py-2 bg-gray-900 text-white text-sm font-bold rounded-full shadow-lg">{{ app(App\Services\CurrencyService::class)->getCurrencyCode() }}</span>
                                 </div>
                             </div>
                             @error('amount')
@@ -590,21 +594,7 @@
                 <!-- Sidebar -->
                 <div class="lg:col-span-1">
                     <div class="sticky top-6 space-y-6">
-                        <!-- Preview Card -->
-                        <div
-                            class="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-6 text-white shadow-2xl overflow-hidden">
-                            <div
-                                class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full opacity-20 blur-3xl">
-                            </div>
-                            <div class="relative">
-                                <div class="flex items-center justify-between mb-4">
-                                    <span class="text-sm font-medium text-gray-400">Preview</span>
-                                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                                </div>
-                                <div class="text-4xl font-black mb-2" id="preview-amount">$0.00</div>
-                                <div class="text-sm text-gray-400" id="preview-type">Select type</div>
-                            </div>
-                        </div>
+
 
                         <!-- Tips Card -->
                         <div
@@ -638,32 +628,16 @@
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const amountInput = document.getElementById('amount');
-                const previewAmount = document.getElementById('preview-amount');
-                const previewType = document.getElementById('preview-type');
 
-                // Update preview
-                amountInput?.addEventListener('input', function () {
-                    const val = parseFloat(this.value) || 0;
-                    previewAmount.textContent = '$' + val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                });
+
+
 
                 // Format amount
                 amountInput?.addEventListener('blur', function () {
                     if (this.value) {
                         this.value = parseFloat(this.value).toFixed(2);
-                        previewAmount.textContent = '$' + parseFloat(this.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     }
                 });
-
-                // Update type preview
-                document.querySelectorAll('input[name="type"]').forEach(radio => {
-                    radio.addEventListener('change', function () {
-                        previewType.textContent = this.value.charAt(0).toUpperCase() + this.value.slice(1);
-                    });
-                });
-
-                // Auto-focus
-                amountInput?.focus();
 
                 // ==================== VOICE RECORDING FUNCTIONALITY ====================
                 const recordBtn = document.getElementById('voice-record-btn');
@@ -883,7 +857,7 @@
                     }
 
                     // Smooth scroll to amount field for user to review
-                    amountInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // scroll removed as requested
                 }
 
                 // Record button click handler

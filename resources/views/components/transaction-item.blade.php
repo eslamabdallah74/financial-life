@@ -14,11 +14,12 @@
         </div>
         <div>
             <p class="font-medium text-gray-900">
-                {{ $transaction->category ? $transaction->category->name : 'Uncategorized' }}</p>
+                {{ $transaction->category ? $transaction->category->name : 'Uncategorized' }}
+            </p>
             <p class="text-sm text-gray-500">{{ $transaction->transaction_date->format('M d, Y') }}</p>
         </div>
     </div>
     <span class="font-bold {{ $transaction->type === 'income' ? 'text-green-600' : 'text-red-600' }}">
-        {{ $transaction->type === 'income' ? '+' : '-' }}${{ number_format($transaction->amount, 2) }}
+        {{ $transaction->type === 'income' ? '+' : '-' }}@money($transaction->amount)
     </span>
 </div>

@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
+ 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+ 
     <title>{{ config('app.name', 'Finance Tracker') }}</title>
-
+ 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-
+ 
 <body class="font-sans antialiased">
     <div class="min-h-screen">
         @include('layouts.navigation')
-
+ 
         <!-- Page Heading -->
         @if (isset($header))
             <header class="bg-white shadow-sm">
@@ -24,7 +24,7 @@
                 </div>
             </header>
         @endif
-
+ 
         <!-- Main Layout with Sidebar -->
         <div class="flex">
             <!-- Sidebar - Hidden on mobile, shown on desktop -->
@@ -39,7 +39,7 @@
                         </svg>
                         <span>Dashboard</span>
                     </a>
-
+ 
                     <a href="{{ route('transactions.index') }}"
                         class="sidebar-link {{ request()->routeIs('transactions.*') ? 'active' : '' }}">
                         <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +48,7 @@
                         </svg>
                         <span>Transactions</span>
                     </a>
-
+ 
                     <a href="{{ route('categories.index') }}"
                         class="sidebar-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
                         <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,10 +57,21 @@
                         </svg>
                         <span>Categories</span>
                     </a>
-
+ 
+                    <a href="{{ route('settings.index') }}"
+                        class="sidebar-link {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>Settings</span>
+                    </a>
+ 
                     <!-- Divider -->
                     <div class="border-t border-gray-200 my-4"></div>
-
+ 
                     <!-- Additional Quick Stats -->
                     <div class="px-3 py-4" x-data="{ showBalance: true }">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Quick Stats</p>
@@ -82,14 +93,14 @@
                                 </div>
                                 <div class="text-lg font-bold transition-all duration-300"
                                      :class="showBalance ? 'text-gradient' : 'text-gray-400 blur-sm select-none'">
-                                    ${{ number_format($globalTotalBalance ?? 0, 2) }}
+                                    @money($globalTotalBalance ?? 0)
                                 </div>
                             </div>
                         </div>
                     </div>
                 </nav>
             </aside>
-
+ 
             <!-- Main Content -->
             <main class="flex-1 lg:ml-64 transition-all duration-300">
                 <div class="py-8 px-4 sm:px-6 lg:px-8">
@@ -100,8 +111,8 @@
             </main>
         </div>
     </div>
-
+ 
     @stack('scripts')
 </body>
-
+ 
 </html>

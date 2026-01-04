@@ -57,15 +57,17 @@
     }
 
     /* Hide number input spin buttons */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
     }
 
-    input[type=number] {
-        -moz-appearance: textfield;
+    input[type="number"] {
+        appearance: textfield !important;
+        -moz-appearance: textfield !important;
     }
+
 }
 
 @layer components {
@@ -338,7 +340,7 @@
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
 
-    /* Fade In Animation */
+    /* Animations */
     @keyframes fadeIn {
         from {
             opacity: 0;
@@ -351,28 +353,80 @@
         }
     }
 
-    .fade-in {
-        animation: fadeIn var(--transition-slow) ease-out;
-    }
-
-    /* Pulse Animation */
-    @keyframes pulse {
+    @keyframes pulse-soft {
 
         0%,
         100% {
+            transform: scale(1);
             opacity: 1;
         }
 
         50% {
-            opacity: 0.5;
+            transform: scale(1.05);
+            opacity: 0.8;
         }
     }
 
-    .animate-pulse {
-        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    @keyframes spin-slow {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
     }
 
-    /* Gradient Text */
+    @keyframes scan-line {
+        0% {
+            transform: translateY(-100%);
+        }
+
+        100% {
+            transform: translateY(300%);
+        }
+    }
+
+    @keyframes wave {
+
+        0%,
+        100% {
+            transform: scaleY(0.5);
+        }
+
+        50% {
+            transform: scaleY(1.3);
+        }
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: -200% 0;
+        }
+
+        100% {
+            background-position: 200% 0;
+        }
+    }
+
+    .animate-spin-slow {
+        animation: spin-slow 8s linear infinite;
+    }
+
+    .animate-wave {
+        animation: wave 1.2s ease-in-out infinite;
+    }
+
+    .animate-pulse-soft {
+        animation: pulse-soft 2s ease-in-out infinite;
+    }
+
+    .animate-shimmer {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite;
+    }
+
     .text-gradient {
         background: linear-gradient(135deg, var(--primary-start) 0%, var(--primary-end) 100%);
         -webkit-background-clip: text;
@@ -381,7 +435,6 @@
         font-weight: 700;
     }
 
-    /* Icon Container */
     .icon-container {
         width: 3rem;
         height: 3rem;
@@ -414,7 +467,6 @@
     }
 }
 
-/* Responsive Utilities */
 @layer utilities {
     .scrollbar-hide::-webkit-scrollbar {
         display: none;

@@ -79,7 +79,7 @@
                     <div class="mb-10">
                         <label for="amount" class="block text-sm font-semibold text-gray-900 mb-4">Amount</label>
                         <div class="relative group">
-                            <div class="absolute left-6 top-1/2 -translate-y-1/2 text-4xl font-bold text-gray-400 pointer-events-none">$</div>
+                            <div class="absolute left-6 top-1/2 -translate-y-1/2 text-4xl font-bold text-gray-400 pointer-events-none">@currencySymbol</div>
                             <input type="number" 
                                    id="amount" 
                                    name="amount" 
@@ -90,9 +90,8 @@
                                    class="w-full pl-20 pr-8 py-6 text-5xl font-extrabold border-2 border-gray-200 rounded-2xl 
                                           focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 
                                           transition-all placeholder:text-gray-300"
-                                   required
-                                   autofocus>
-                            <div class="absolute right-6 top-6 text-sm font-medium text-gray-400">USD</div>
+                                   required>
+                            <div class="absolute right-6 top-6 text-sm font-medium text-gray-400">{{ app(App\Services\CurrencyService::class)->getCurrencyCode() }}</div>
                         </div>
                         @error('amount')
                             <p class="mt-3 text-sm text-red-600 flex items-center gap-1">

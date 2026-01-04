@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\CurrencyService;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(CurrencyService::class, function ($app) {
+            return new CurrencyService();
+        });
     }
 
     /**
@@ -20,9 +25,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Share balance with all authenticated layouts
-        \Illuminate\Support\Facades\View::composer('layouts.app', \App\View\Composers\BalanceComposer::class);
+        View::composer('layouts.app', \App\View\Composers\BalanceComposer::class);
 
         // Register User observer for auto-seeding categories
         \App\Models\User::observe(\App\Observers\UserObserver::class);
+
+        // Blade Directive: @money($amount)
+        Blade::directive('money', function ($expression) {
+            return "<?php echo money($expression); ?>";
+        });
+
+        // Blade Directive: @currencySymbol
+        Blade::directive('currencySymbol', function () {
+            return "<?php echo currency_symbol(); ?>";
+        });
     }
 }

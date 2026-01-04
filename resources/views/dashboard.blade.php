@@ -17,7 +17,7 @@
         <!-- Statistics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Total Balance Card -->
-            <x-stat-card title="Total Balance" :value="'$' . number_format($totalBalance, 2)" subtitle="Current balance"
+            <x-stat-card title="Total Balance" :value="@money($totalBalance)" subtitle="Current balance"
                 icon-variant="primary">
                 <x-slot name="icon">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,8 +28,8 @@
             </x-stat-card>
 
             <!-- Monthly Income Card -->
-            <x-stat-card title="Monthly Income" :value="'$' . number_format($monthlyIncome, 2)" subtitle="This month"
-                variant="success" value-class="text-green-600" icon-variant="success">
+            <x-stat-card title="Monthly Income" :value="@money($monthlyIncome)" subtitle="This month" variant="success"
+                value-class="text-green-600" icon-variant="success">
                 <x-slot name="icon">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -39,8 +39,8 @@
             </x-stat-card>
 
             <!-- Monthly Expenses Card -->
-            <x-stat-card title="Monthly Expenses" :value="'$' . number_format($monthlyExpenses, 2)"
-                subtitle="This month" variant="danger" value-class="text-red-600" icon-variant="danger">
+            <x-stat-card title="Monthly Expenses" :value="@money($monthlyExpenses)" subtitle="This month"
+                variant="danger" value-class="text-red-600" icon-variant="danger">
                 <x-slot name="icon">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -168,16 +168,16 @@
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
                             <span class="text-sm opacity-90">Income</span>
-                            <span class="font-bold">${{ number_format($monthlyIncome, 2) }}</span>
+                            <span class="font-bold">@money($monthlyIncome)</span>
                         </div>
                         <div class="flex justify-between items-center">
                             <span class="text-sm opacity-90">Expenses</span>
-                            <span class="font-bold">${{ number_format($monthlyExpenses, 2) }}</span>
+                            <span class="font-bold">@money($monthlyExpenses)</span>
                         </div>
                         <div class="border-t border-white border-opacity-20 pt-3 flex justify-between items-center">
                             <span class="font-semibold">Net</span>
                             <span
-                                class="text-xl font-bold">${{ number_format($monthlyIncome - $monthlyExpenses, 2) }}</span>
+                                class="text-xl font-bold">@money($monthlyIncome - $monthlyExpenses)</span>
                         </div>
                     </div>
                 </div>

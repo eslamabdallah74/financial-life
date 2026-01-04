@@ -43,7 +43,7 @@ class UserSetting extends Model
         return self::firstOrCreate(
             ['user_id' => $userId],
             [
-                'currency' => 'USD',
+                'currency' => 'EGP',
                 'language' => 'ar',
                 'theme' => 'auto',
                 'notifications_enabled' => true,

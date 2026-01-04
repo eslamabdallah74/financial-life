@@ -13,7 +13,11 @@
         </div>
     </x-slot>
 
-    <div class="fade-in">
+    <div class="fade-in" x-data="{ 
+        showDeleteModal: false, 
+        transactionId: '', 
+        deleteRoute: '' 
+    }">
         @if(session('success'))
             <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-lg">
                 <div class="flex items-center">
@@ -66,7 +70,7 @@
                             </span>
                             <span
                                 class="text-xl font-bold {{ $transaction->type === 'income' ? 'text-green-600' : 'text-red-600' }}">
-                                {{ $transaction->type === 'income' ? '+' : '-' }}${{ number_format($transaction->amount, 2) }}
+                                {{ $transaction->type === 'income' ? '+' : '-' }}@money($transaction->amount)
                             </span>
                         </div>
 
@@ -76,15 +80,11 @@
                                 class="flex-1 text-center px-3 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-md transition">
                                 Edit
                             </a>
-                            <form action="{{ route('transactions.destroy', $transaction) }}" method="POST" class="flex-1"
-                                onsubmit="return confirm('Are you sure you want to delete this transaction?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="w-full px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition">
-                                    Delete
-                                </button>
-                            </form>
+                            <button type="button"
+                                @click="showDeleteModal = true; deleteRoute = '{{ route('transactions.destroy', $transaction) }}'"
+                                class="flex-1 text-center px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition">
+                                Delete
+                            </button>
                         </div>
                     </div>
                 @endforeach
@@ -115,5 +115,8 @@
                 </div>
             </div>
         @endif
+
+        <x-delete-confirmation-modal show="showDeleteModal" title="Delete Transaction?" action="deleteRoute"
+            message="Are you sure you want to delete this transaction? This action cannot be undone." />
     </div>
 </x-app-layout>
